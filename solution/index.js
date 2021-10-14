@@ -12,14 +12,12 @@ module.exports = function (Homework) {
     // асинхронный reduce
     const length = await promisify(array.length);
     let result = initialValue;
+    let i = 0;
 
-    for (
-      let i = 0;
-      await promisify(Homework.less.bind(null, i, length));
-      i = await promisify(Homework.add.bind(null, i, 1))
-    ) {
+    while (await promisify(Homework.less.bind(null, i, length))) {
       const curr = await promisify(array.get.bind(null, i));
       result = await promisify(fn.bind(null, result, curr, i, array));
+      i = await promisify(Homework.add.bind(null, i, 1));
     }
 
     cb(result);
