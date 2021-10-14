@@ -10,25 +10,6 @@ module.exports = function (Homework) {
 
   return async (array, fn, initialValue, cb) => {
     // асинхронный reduce
-
-    if (!array instanceof Homework.AsyncArray) {
-      throw new Error("not AsyncArray");
-    }
-
-    const fnSet = await promisify(
-      Homework.equal.bind(null, typeof fn, "function")
-    );
-    if (!fnSet) {
-      throw new Error("fn not set");
-    }
-
-    const cbSet = await promisify(
-      Homework.equal.bind(null, typeof cb, "function")
-    );
-    if (!cbSet) {
-      throw new Error("cb not set");
-    }
-
     const length = await promisify(array.length);
     let result = initialValue;
 
