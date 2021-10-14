@@ -1,22 +1,36 @@
 module.exports = function (Homework) {
   // вспомогательные фукнции и т.д.
 
-  const promisify = (func) => new Promise((resolve) => func(resolve));
+  function promisify(func) {
+    return function (...args) {
+      return new Promise((resolve) => {
+        func(...args, resolve);
+      });
+    };
+  }
 
-  return async (array, fn, initialValue, cb) => {
+  return (array, fn, initialValue, cb) => {
     // асинхронный reduce
-    const length = await promisify(array.length);
-    let result = initialValue;
-    let i = 0;
+    const getLength = promisify(array.length);
+    const isLesser = promisify(Homework.less);
+    const getValue = promisify(array.get);
+    const compute = promisify(fn);
+    const add = promisify(Homework.add);
 
-    while (await promisify((resolve) => Homework.less(i, length, resolve))) {
-      const curr = await promisify((resolve) => array.get(i, resolve));
-      result = await promisify((resolve) =>
-        fn(result, curr, i, array, resolve)
-      );
-      i = await promisify((resolve) => Homework.add(i, 1, resolve));
+    async function run() {
+      const length = await getLength();
+      let result = initialValue;
+      let i = 0;
+
+      while (await isLesser(i, length)) {
+        const curr = await getValue(i);
+        result = await compute(result, curr, i, array);
+        i = await add(i, 1);
+      }
+
+      return result;
     }
 
-    cb(result);
+    run().then(cb);
   };
 };
