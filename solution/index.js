@@ -1,9 +1,9 @@
 module.exports = function (Homework) {
   // вспомогательные фукнции и т.д.
 
-  const promisify = (func, ...props) =>
+  const promisify = (func) =>
     new Promise((resolve) => {
-      func(...props, (result) => {
+      func((result) => {
         resolve(result);
       });
     });
@@ -15,12 +15,16 @@ module.exports = function (Homework) {
       throw new Error("not AsyncArray");
     }
 
-    const fnSet = await promisify(Homework.equal, typeof fn, "function");
+    const fnSet = await promisify(
+      Homework.equal.bind(null, typeof fn, "function")
+    );
     if (!fnSet) {
       throw new Error("fn not set");
     }
 
-    const cbSet = await promisify(Homework.equal, typeof cb, "function");
+    const cbSet = await promisify(
+      Homework.equal.bind(null, typeof cb, "function")
+    );
     if (!cbSet) {
       throw new Error("cb not set");
     }
@@ -30,11 +34,11 @@ module.exports = function (Homework) {
 
     for (
       let i = 0;
-      await promisify(Homework.less, i, length);
-      i = await promisify(Homework.add, i, 1)
+      await promisify(Homework.less.bind(null, i, length));
+      i = await promisify(Homework.add.bind(null, i, 1))
     ) {
-      const curr = await promisify(array.get, i);
-      result = await promisify(fn, result, curr, i, array);
+      const curr = await promisify(array.get.bind(null, i));
+      result = await promisify(fn.bind(null, result, curr, i, array));
     }
 
     cb(result);
