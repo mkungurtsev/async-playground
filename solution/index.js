@@ -15,11 +15,13 @@ module.exports = function (Homework) {
       throw new Error("not AsyncArray");
     }
 
-    if (typeof fn !== "function") {
+    const fnSet = await promisify(Homework.equal, typeof fn, "function");
+    if (!fnSet) {
       throw new Error("fn not set");
     }
 
-    if (typeof cb !== "function") {
+    const cbSet = await promisify(Homework.equal, typeof cb, "function");
+    if (!cbSet) {
       throw new Error("cb not set");
     }
 
