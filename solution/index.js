@@ -26,9 +26,13 @@ module.exports = function (Homework) {
     const length = await promisify(array.length);
     let result = initialValue;
 
-    for (let i = 0; i < length; i++) {
-      const value = await promisify(array.get, i);
-      result = await promisify(fn, result, value, i, array);
+    for (
+      let i = 0;
+      await promisify(Homework.less, i, length);
+      i = await promisify(Homework.add, i, 1)
+    ) {
+      const curr = await promisify(array.get, i);
+      result = await promisify(fn, result, curr, i, array);
     }
 
     cb(result);
